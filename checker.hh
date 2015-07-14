@@ -62,13 +62,15 @@ void *thread_func(void *argument) {
 }
 
 void check_all_urls(thread_arg *urls, int array_size) {
-	int i, j, check, flag;
+	int i, j, check, flag, plus = 1;
 	int col_threads = sysconf(_SC_NPROCESSORS_ONLN) * CHECKER_THREAD_INDEX;
 	thread_array *url_array;
 	pthread_t *thread;
 
-	if (col_threads > array_size)
+	if (col_threads > array_size) {
 		col_threads = array_size;
+		plus = 0;
+	}
 
 	url_array = malloc(col_threads * sizeof(thread_array));
 	thread = malloc(col_threads * sizeof(pthread_t));
@@ -80,7 +82,7 @@ void check_all_urls(thread_arg *urls, int array_size) {
 	for (i = 0; i < col_threads; i++) {
 		url_array[i].status = 0;
 		url_array[i].delay = i * CHECKER_DELAY_INDEX;
-		url_array[i].args_count = col_threads / array_size + 1;
+		url_array[i].args_count = col_threads / array_size + plus;
 		if (array_size % col_threads > i)
 			url_array[i].args_count++;
 		url_array[i].args = (thread_arg **) malloc(url_array[i].args_count * sizeof(thread_arg));
