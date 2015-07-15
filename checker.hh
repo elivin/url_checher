@@ -45,11 +45,16 @@ void *thread_func(void *argument) {
 	for (i = 0; i < arg->args_count; i++) {
 		curl = curl_easy_init();
 		if(curl) {
-			curl_easy_setopt(curl, CURLOPT_URL, arg->args[i]->url);
-			curl_easy_setopt(curl, CURLOPT_HEADER, 1);
-			curl_easy_setopt(curl, CURLOPT_FOLLOWLOCATION, 1);
-			curl_easy_setopt(curl, CURLOPT_WRITEDATA, tmp_buf);
-			curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, write_data);
+		curl_easy_setopt(curl, CURLOPT_URL, arg->args[i]->url);
+		curl_easy_setopt(curl, CURLOPT_HEADER, 1);
+		curl_easy_setopt(curl, CURLOPT_USERAGENT, "User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:31.0) Gecko/20100101 Firefox/31.0 Iceweasel/31.8.0");
+		curl_easy_setopt(curl, CURLOPT_POSTREDIR, 1);
+		curl_easy_setopt(curl, CURLOPT_AUTOREFERER,1);
+		curl_easy_setopt(curl, CURLOPT_FOLLOWLOCATION, 1);
+		curl_easy_setopt(curl, CURLOPT_WRITEDATA, tmp_buf);
+		curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, write_data);
+		curl_easy_setopt(curl, CURLOPT_COOKIELIST, "ALL");
+		curl_easy_setopt(curl, CURLOPT_COOKIEFILE, "");
 
 			res = curl_easy_perform(curl);
 			curl_easy_getinfo(curl, CURLINFO_RESPONSE_CODE, &http_code);
